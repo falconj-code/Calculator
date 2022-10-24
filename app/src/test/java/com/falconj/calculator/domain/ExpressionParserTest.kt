@@ -30,6 +30,6 @@ class ExpressionParserTest {
             ExpressionPart.Number(2.0),
             ExpressionPart.Parentheses(ParenthesesType.Closing)
         )
-        assertThat(expected).isEqualTo(actual)
+        assertThat(actual).isEqualTo(expected)
     }
 }
