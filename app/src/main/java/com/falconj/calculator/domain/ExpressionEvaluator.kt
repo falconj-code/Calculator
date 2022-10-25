@@ -4,7 +4,7 @@ package com.falconj.calculator.domain
 /**
  * Uses the following grammar
  * expression :	term | term + term | term − term
- * term :		factor | factor * factor | factor / factor
+ * term :		factor | factor * factor | factor / factor | factor % factor
  * factor : 	number | ( expression ) | + factor | − factor
  */
 class ExpressionEvaluator(
@@ -30,6 +30,11 @@ class ExpressionEvaluator(
                     val term = evalTerm(remaining.drop(1))
                     sum -= term.value
                     remaining = term.remainingExpression
+                }
+                ExpressionPart.Op(Operation.PERCENT) -> {
+                    val factor = evalFactor(remaining.drop(1))
+                    sum *= (factor.value / 100.0)
+                    remaining = factor.remainingExpression
                 }
                 else -> return ExpressionResult(remaining, sum)
             }
@@ -75,6 +80,8 @@ class ExpressionEvaluator(
                     ExpressionResult(remainingExpression.drop(1), value)
                 }
             }
+            ExpressionPart.Op(Operation.PERCENT) -> evalTerm(expression.drop(1))
+
             is ExpressionPart.Number -> ExpressionResult(
                 remainingExpression = expression.drop(1),
                 value = part.number
